@@ -1,0 +1,45 @@
+# {{TOPIC}} 知识库工作规范
+
+## Obsidian 文档规则
+
+- 创建或编辑任何 `.md` 文件时，必须调用 `obsidian:obsidian-markdown` skill
+- 所有文档使用 Obsidian Flavored Markdown（wikilink、callouts、frontmatter properties）
+
+## 渐进式文档原则
+
+- 每个 `.md` 文件聚焦**单一知识点**，禁止把多个主题合并到一个文件
+- 字数上限：
+  - 快速参考卡（quick-ref）：300-800 字
+  - 学习笔记（notes）：800-1500 字
+  - 深度研究（deep-dive）：1500 字以内
+- 新增知识点时，**优先创建新文件**，而不是追加到已有文件末尾
+
+## 目录规范
+
+- 模块目录使用数字前缀（`01-xxx/`），保持固定顺序
+- 每个模块必须有 `README.md` 作为模块导航（列出该模块所有文件的 wikilink）
+- 图片/附件统一放 `_assets/`
+- 模板统一放 `_templates/`
+
+## 更新迭代流程
+
+1. 更新某模块时，**先读取该模块的 `README.md`** 了解已有文件，避免重复创建
+2. 补充新知识点：在对应模块目录下创建新文件
+3. 完善已有文档：直接编辑对应文件，遵守字数上限
+4. 每次新增文件后，同步更新以下两处：
+   - 所在模块的 `README.md`（添加 wikilink）
+   - `00-index/知识图谱.md`（添加 wikilink）
+
+## 语言规范
+
+- 文件命名：中文（如 `所有权概念.md`）
+- Frontmatter tags：英文小写
+- 正文：中文叙述 + 英文技术术语
+
+## Tags 体系
+
+| 层级 | 可用值 | 说明 |
+|------|--------|------|
+| 模块 | {{MODULES}} | 对应模块目录 |
+| 类型 | `quick-ref` `notes` `deep-dive` | 对应文档深度 |
+| 状态 | `draft` `complete` `outdated` | 维护状态 |
