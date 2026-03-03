@@ -78,7 +78,7 @@ flowchart LR
 ## 安装
 
 ```bash
-git clone https://github.com/<username>/obsidian-lab ~/.claude/plugins/obsidian-lab
+git clone https://github.com/VisionTang/obsidian-lab ~/.claude/plugins/obsidian-lab
 ```
 
 ### 依赖（可选）
