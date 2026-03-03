@@ -1,85 +1,81 @@
 ---
 name: init-topic-vault
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: "Initialize a complete Obsidian learning vault in the current directory for any topic. Use when starting a new Obsidian knowledge base for learning or research. Invoke with /obsidian-lab:init-topic-vault \"主题名\" to automatically plan modules, create directory structure, and generate a CLAUDE.md configuration file."
 ---
 
-# Init Topic Vault
+# Obsidian 主题学习知识库初始化
 
-## Overview
+用户正在当前目录初始化一个全新的 Obsidian 学习知识库。
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## 第一步：依赖检测
 
-## Structuring This Skill
+运行 `scripts/check_deps.sh` 检测依赖：
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+```bash
+bash ~/.claude/plugins/obsidian-lab/skills/init-topic-vault/scripts/check_deps.sh
+```
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" → "Reading" → "Creating" → "Editing"
-- Structure: ## Overview → ## Workflow Decision Tree → ## Step 1 → ## Step 2...
-
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" → "Merge PDFs" → "Split PDFs" → "Extract Text"
-- Structure: ## Overview → ## Quick Start → ## Task Category 1 → ## Task Category 2...
-
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" → "Colors" → "Typography" → "Features"
-- Structure: ## Overview → ## Guidelines → ## Specifications → ## Usage...
-
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" → numbered capability list
-- Structure: ## Overview → ## Core Capabilities → ### 1. Feature → ### 2. Feature...
-
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
-
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
-
-## [TODO: Replace with the first main section based on chosen structure]
-
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
-
-## Resources
-
-This skill includes example resource directories that demonstrate how to organize different types of bundled resources:
-
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
-
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
-
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
-
-**Note:** Scripts may be executed without loading into context, but can still be read by Claude for patching or environment adjustments.
-
-### references/
-Documentation and reference material intended to be loaded into context to inform Claude's process and thinking.
-
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
-
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Claude should reference while working.
-
-### assets/
-Files not intended to be loaded into context, but rather used within the output Claude produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
+- **输出 `all_deps_ok`（exit 0）** → 执行下方"完整流程"
+- **输出 `deps_missing`（exit 1）** → 告知用户缺少哪些 plugin，执行下方"降级流程"
 
 ---
 
-**Any unneeded directories can be deleted.** Not every skill requires all three types of resources.
+## 完整流程（all_deps_ok）
+
+注入以下上下文后调用 `superpowers:brainstorming`：
+
+> 我们正在为 **[主题名]** 初始化一个 Obsidian 学习知识库。
+>
+> **约束条件：**
+> - 这是个人学习知识库，不是软件项目
+> - 模块使用数字前缀目录（`01-xxx/`），建议 5-8 个模块
+> - 每个模块规划初始文档：至少 1 篇 quick-ref + 1 篇 notes，核心模块可加 deep-dive
+> - 最终产物：目录结构 + CLAUDE.md + 各模块 README + 初始文档骨架
+> - 不涉及技术架构、测试、CI/CD 等软件工程概念
+>
+> **brainstorming 输出：**
+> 1. 模块列表（带数字前缀和中文名）
+> 2. 每个模块的初始文档清单（文件名 + 类型 quick-ref/notes/deep-dive）
+> 3. 学习路径建议（模块学习顺序）
+> 4. 知识图谱结构（模块间依赖关系）
+
+brainstorming 完成后自动调用 `superpowers:writing-plans`，生成包含所有文件路径和内容的执行计划。
+
+---
+
+## 降级流程（deps_missing）
+
+**Obsidian 规范：** 参考 [references/obsidian-conventions.md](references/obsidian-conventions.md)
+
+### 1. 规划模块
+
+根据主题分析，生成 5-8 个模块，每个模块包含：
+- 数字前缀目录名（如 `01-基础概念/`）
+- 初始文档清单（至少 1 quick-ref + 1 notes）
+
+展示模块列表，等待用户确认。
+
+### 2. 创建文件结构
+
+用户确认后，按以下结构创建（遵循 obsidian-conventions.md 中的文档规范）：
+
+```
+<当前目录>/
+├── 00-index/
+│   ├── 知识图谱.md      ← 列出所有模块的 wikilink
+│   └── 学习路径.md      ← 建议的学习顺序
+├── 01-<模块名>/
+│   ├── README.md        ← 模块导航，列出所有文件 wikilink
+│   └── <初始文档>.md
+├── 02-<模块名>/
+│   └── ...
+├── _assets/
+├── _templates/
+└── CLAUDE.md
+```
+
+### 3. 生成 CLAUDE.md
+
+读取 `assets/CLAUDE.md.template`（路径：`~/.claude/plugins/obsidian-lab/skills/init-topic-vault/assets/CLAUDE.md.template`），替换占位符：
+- `{{TOPIC}}` → 实际主题名
+- `{{MODULES}}` → 根据模块列表生成的 tag 英文值（如 `basics` `ownership` `lifetime`）
