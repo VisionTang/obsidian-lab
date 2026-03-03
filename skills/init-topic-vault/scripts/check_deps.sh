@@ -11,10 +11,9 @@ MISSING=0
 check_plugin() {
   local plugin_name=$1
   local plugin_dir="$CLAUDE_PLUGINS_DIR/$plugin_name"
-  local cache_dir_official="$CLAUDE_PLUGINS_DIR/cache/claude-plugins-official/$plugin_name"
-  local cache_dir_agent="$CLAUDE_PLUGINS_DIR/cache/anthropic-agent-skills"
 
-  if [ -d "$plugin_dir" ] || [ -d "$cache_dir_official" ] || ls "$cache_dir_agent"/*/"$plugin_name" 2>/dev/null | grep -q .; then
+  # 检查直接安装目录，或在 cache 任意子目录中查找
+  if [ -d "$plugin_dir" ] || find "$CLAUDE_PLUGINS_DIR/cache" -maxdepth 2 -type d -name "$plugin_name" 2>/dev/null | grep -q .; then
     echo "✓ $plugin_name"
   else
     echo "✗ $plugin_name 未找到"
