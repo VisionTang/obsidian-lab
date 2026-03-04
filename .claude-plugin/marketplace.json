@@ -1,0 +1,15 @@
+{
+  "name": "obsidian-lab",
+  "owner": {
+    "name": "VisionTang",
+    "url": "https://github.com/VisionTang"
+  },
+  "plugins": [
+    {
+      "name": "obsidian-lab",
+      "source": "./",
+      "description": "Obsidian knowledge base initialization and management skills for Claude Code",
+      "version": "1.0.0"
+    }
+  ]
+}
